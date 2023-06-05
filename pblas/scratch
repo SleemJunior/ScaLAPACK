@@ -1,0 +1,30 @@
+  //{ 
+  //  // Initialize the MPI environment
+  //  MPI_Init(NULL, NULL);
+  //
+  //  // Get the number of processes
+  //  int world_size;
+  //  MPI_Comm_size(MPI_COMM_WORLD, &world_size);
+  //
+  //  // Get the rank of the process
+  //  int world_rank;
+  //  MPI_Comm_rank(MPI_COMM_WORLD, &world_rank);    // Initialize the MPI environment
+
+  //  std::cout << world_rank << " / " << world_size << std::endl;
+  //}
+
+using time_measurement_t = decltype(std::chrono::high_resolution_clock::now());
+struct cu_debug_write_t_ {
+  cu_debug_write_t_(std::string name):
+    name(name), start(std::chrono::high_resolution_clock::now())
+  {}
+
+  ~cu_debug_write_t_() {
+    auto end = std::chrono::high_resolution_clock::now();
+    cu_debug_write(start, end, name);
+  }
+
+  std::string name;
+  time_measurement_t start;
+};
+

@@ -1,0 +1,36 @@
+cmake_minimum_required(VERSION 3.15)
+project(dist_mkl_exp LANGUAGES CXX)
+
+# set the c++ and cuda version
+set(CMAKE_CXX_STANDARD 20)
+
+# set the output directory
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY  "${PROJECT_SOURCE_DIR}")
+
+#set(MKL_THREADING "sequential")
+
+# RELEASE mode by default
+# do -O3 and set the instruction set to the native one for this machine
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O3 -march=native -fPIC")
+
+# some stuff in the linker to make .so loading nicer
+set(CMAKE_EXE_LINKER_FLAGS  "${CMAKE_EXE_LINKER_FLAGS} -rdynamic -ldl" )
+set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -rdynamic -ldl")
+set(CMAKE_MODULE_LINKER_FLAGS "${CMAKE_MODULE_LINKER_FLAGS} -rdynamic -ldl")
+
+# try to find mkl
+find_package(MKL REQUIRED)
+
+# try to find the mpi library
+find_package(MPI REQUIRED)
+if (MPI_FOUND)
+    include_directories(SYSTEM ${MPI_INCLUDE_PATH})
+endif (MPI_FOUND)
+
+add_executable(exp02 ${PROJECT_SOURCE_DIR}/exp02.cc)
+
+target_link_libraries(exp02 -L/usr/local/lib)
+
+target_link_libraries(exp02 ${MPI_LIBRARIES})
+target_link_libraries(exp02 ${MKL_LIBRARIES})
+
